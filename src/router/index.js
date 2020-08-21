@@ -31,6 +31,12 @@ Vue.use(VueRouter)
         name: 'T20200813',
         component: () => import('../views/test/t20200813.vue'),
         // component: t20200813 // hN20200813 这种语法也可
+      },
+      {
+        path: 't20200820',
+        name: 'T20200820',
+        component: () => import('../views/test/t20200820.vue'),
+        // component: t20200813 // hN20200813 这种语法也可
       }
     ]
   }
