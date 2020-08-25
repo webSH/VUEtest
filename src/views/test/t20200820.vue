@@ -23,14 +23,14 @@
 </template>
 <script>
 	let timeout = 0,
-		delayTime = 16
+		delayTime = 8
 	$(document).on("mousemove",".googleSlide",function(event){
 		let now = new Date().getTime()
 		if (timeout==0 || now - timeout > delayTime) {
 			timeout = now
-			console.log('='+$(this).offset().left)
-			console.log('  '+event.clientX)
-			console.log(event.clientX-$(this).offset().left)
+			// console.log('='+$(this).offset().left)
+			// console.log('  '+event.clientX)
+			// console.log(event.clientX-$(this).offset().left)
 			let dynamicWidth = event.clientX - $(this).offset().left
 			$(this).find(".googleSlide_left").width(dynamicWidth)
 			$(this).find(".sliderBar").css({left:dynamicWidth})
@@ -72,6 +72,7 @@
 		position: absolute;
 		z-index: 10;
 		left: 0;
+		width: 371px;
 	}
 	.sliderBar{
 		position: absolute;
