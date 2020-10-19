@@ -1,10 +1,12 @@
 $warningColor:#d00;
+$gray:#ccc;
 
 /*tag*/
 body{font-size: 16px;}
 /* color */
 .cMain{color:#fff}
 .cMain2{color:#42b983}
+.cGray{color:$gray}
 /* font-size */
 @for $i from 10 through 20 {
 	.fs#{$i}{font-size:#{$i}px;}
@@ -29,7 +31,7 @@ pre,.pre{white-space: pre;
 	border: 1px solid #eee;
 	border-radius: 3px;
 }
-.test{padding:0 10%;}
+.test{padding:10% 10%;}
 .taL{text-align: left;}
 .note{font-size: 0.75rem;line-height: 2;}
 .warning{font-size: 0.75rem;line-height: 2;color: $warningColor;}
@@ -42,4 +44,5 @@ pre,.pre{white-space: pre;
 	line-height: 1.45;
 	background-color: #faf6e6;
 	border-radius: 3px;
+	.comment{@extend .cGray}
 }
