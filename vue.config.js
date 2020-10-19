@@ -10,5 +10,6 @@ module.exports = {
 				"windows.jQuery":"jquery"
 			})
 		]
-	}
+	},
+	runtimeCompiler: true,
 }
