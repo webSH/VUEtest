@@ -20,10 +20,9 @@ Vue.directive('focus', { // 指令的定义(全局) //hA 20200819
 	}
 })
 
-Vue.directive('href-txt', { // 指令的定义(全局) //hA 20201015
+Vue.directive('href-txt', { // hA 20201015 指令的定义(全局) href就是text
 // 当被绑定的元素插入到 DOM 中时……
 	inserted: function (el) {
-// href就是text
 		el.textContent = decodeURI(el.href)
     el.title = '点击打开 '+decodeURI(el.href)
 	}

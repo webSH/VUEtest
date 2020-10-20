@@ -27,51 +27,43 @@ data() {
 		</p>
 <pre class="code">
 <span class="cMain2">html:</span>
-{{pageHtml.template}}
+{{pageB.template}}
 <span class="cMain2">js:</span>
-<span v-html="delFunTxt(pageHtml.methods.vueAlert)"></span>
+<span v-html="funToTxt(pageB.methods.vueAlert)"></span>
 </pre>
-	
 	</div>
 </template>
 <script>
 	var pageB = {
-	    template: '<a href="http://google.com" @click.prevent="vueAlert">到谷歌的链接</a>',
-	    data:function(){
-	      return {}
-	    },
-			methods:{
-				vueAlert(){
-					/* 直接在@click中使用alert会认为是vue实例中的方法名，会报错 */
-					alert('function 通过@click.prevent阻止了a标签的原有链接')
-					/*  */
-				}
+		template: '<a href="http://google.com" @click.prevent="vueAlert">到谷歌的链接</a>',
+		data:function(){
+			return {}
+		},
+		methods:{
+			vueAlert(){
+				/* 直接在@click中使用alert会认为是vue实例中的方法名，会报错 */
+				alert('function 通过@click.prevent阻止了a标签的原有链接')
+				/*  */
+				//单行注释
 			}
-	  };
+		}
+	};
+	import * as lib from '@/assets/main'
+	
 	export default {
 		name: 't20201016',
 		components: {
-			pageB
+			pageB //修饰符示例的模板
 		},
 		data() {
 			return {
 				attrname:'title',
 				customTitle:'绑定到property的title',
-				pageHtml:pageB
+				pageB:pageB
 			}
 		},
 		methods: {
-			delFunTxt(fun){
-				if (typeof(fun)!='string') fun = String(fun) //把函数字符串
-				var re = /\/\*[^*/]+\*\//g //正则
-				// var comment = fun.match(re)
-				// console.log(comment)
-				fun = fun.replace('function ','    ') //把String后的方法中第一个function删除（获取模板变量pageB中的方法时前面会加上function）
-				var result = fun.replace(re,function(str){
-					return '<span class="comment">'+str+'</span>'
-				}) //逐个替换注释为html代码，以在前端显示
-				return result
-			}
+			funToTxt:lib.funToTxt,
 		},
 		mounted() {
 
