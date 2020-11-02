@@ -44,12 +44,12 @@ data() {
 				/* 直接在@click中使用alert会认为是vue实例中的方法名，会报错 */
 				alert('function 通过@click.prevent阻止了a标签的原有链接')
 				/*  */
-				//单行注释
+				//单行注 释
 			}
 		}
 	};
-	import * as lib from '@/assets/main'
-	
+
+	import {funToTxt} from '@/assets/main'
 	export default {
 		name: 't20201016',
 		components: {
@@ -63,7 +63,7 @@ data() {
 			}
 		},
 		methods: {
-			funToTxt:lib.funToTxt,
+			funToTxt,
 		},
 		mounted() {
 
