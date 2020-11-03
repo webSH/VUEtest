@@ -6,9 +6,9 @@ import store from './store'
 Vue.config.productionTip = false
 
 new Vue({
-  router,
-  store,
-  render: h => h(App)
+	router,
+	store,
+	render: h => h(App)
 }).$mount('#app')
 
 Vue.directive('focus', { // 指令的定义(全局) //hA 20200819
@@ -24,7 +24,7 @@ Vue.directive('href-txt', { // hA 20201015 指令的定义(全局) href就是tex
 // 当被绑定的元素插入到 DOM 中时……
 	inserted: function (el) {
 		el.textContent = decodeURI(el.href)
-    el.title = '点击打开 '+decodeURI(el.href)
+		el.title = '点击打开 '+decodeURI(el.href)
 	}
 })
 

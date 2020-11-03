@@ -5,13 +5,11 @@ export function funToTxt(fun){ //内置模板中的函数转换为字符串做�
 	// var comment = fun.match(re)
 	// console.log(comment)
 	fun = fun.replace('function ','    ') //把String后的方法中第一个function删除（获取模板变量pageB中的方法时前面会加上function）
-	var result_filterMultiC
-	result_filterMultiC = fun.replace(re_MultiComment,function(str){
+	fun = fun.replace(re_MultiComment,function(str){
 		return '<span class="comment">'+str+'</span>'
 	}) //逐个替换多行注释为html代码，以在前端显示
-	var result_filterSingleC
-	var result_filterSingleC = (result_filterMultiC||fun).replace(re_SingleComment,function(str){
+	fun = fun.replace(re_SingleComment,function(str){
 		return '<span class="comment">'+str+'</span>'
 	}) //逐个替换单行注释为html代码，以在前端显示
-	return result_filterSingleC || result_filterMultiC || fun
+	return fun
 }

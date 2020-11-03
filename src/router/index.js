@@ -56,6 +56,16 @@ Vue.use(VueRouter)
         path: 't20201030',
         name: 'T20201030',
         component: () => import('../views/test/t20201030.vue')
+      },
+      {
+        path: 't20201102',
+        name: 'T20201102',
+        component: () => import('../views/test/t20201102.vue')
+      },
+      {
+        path: 't20201103',
+        name: 'T20201103',
+        component: () => import('../views/test/t20201103.vue')
       }
     ]
   }

@@ -12,9 +12,17 @@ body{font-size: 16px;}
 	.fs#{$i}{font-size:#{$i}px;}
 }
 
+@for $i from 1 through 20 {
+	.tIdt#{$i}{text-indent:#{$i}em;}
+}
+
+
+.dpIB{display: inline-block;}
+.dpI{display: inline;}
+.dpB{display: block;}
 
 /*Named class*/
-pre,.pre{white-space: pre;
+pre,.pre{white-space: pre-wrap;
 	text-align: left;
 	word-break: break-all;
     word-wrap: break-word;
@@ -32,7 +40,12 @@ pre,.pre{white-space: pre;
 	border-radius: 3px;
 }
 .test{padding:10% 10%;}
+
 .taL{text-align: left;}
+.taR{text-align: right;}
+
+.b{font-weight: bold;}
+
 .note{font-size: 0.75rem;line-height: 2;}
 .warning{font-size: 0.75rem;line-height: 2;color: $warningColor;}
 .code{
