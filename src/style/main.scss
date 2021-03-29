@@ -1,5 +1,8 @@
+@font-face{font-family:'led';src:url(../assets/font/digital-7-mono-3.ttf); font-style:normal; font-weight:normal}
+
 $warningColor:#d00;
 $gray:#ccc;
+$green:#42b983;
 
 /*tag*/
 body{font-size: 16px;}
@@ -16,6 +19,12 @@ body{font-size: 16px;}
 	.tIdt#{$i}{text-indent:#{$i}em;}
 }
 
+.bgGreen{background:$green;color:#fff}
+.bgRed{background:$warningColor;color:#fff}
+
+.cGreen{color:$green;}
+
+.LED{font-family: led;}
 
 .dpIB{display: inline-block;}
 .dpI{display: inline;}

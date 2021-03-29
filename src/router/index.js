@@ -71,6 +71,11 @@ Vue.use(VueRouter)
         path: 't20210308',
         name: 'T20210308',
         component: () => import('../views/test/t20210308.vue')
+      },
+      {
+        path: 't20210326',
+        name: 'T20210326',
+        component: () => import('../views/test/t20210326.vue')
       }
     ]
   }
