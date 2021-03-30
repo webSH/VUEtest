@@ -15,6 +15,58 @@
 			<div class="ES">
 				
 			</div>
+			<div class="road road_NS">
+				<div class="down">
+					<div class="in">
+						<p class="line a"></p>
+						<p class="line a"></p>
+						<p class="line l"></p>
+					</div>
+					<div class="out">
+						<p class="line a"></p>
+						<p class="line a"></p>
+						<p class="line a"></p>
+					</div>
+				</div>
+				<div class="up">
+					<div class="in">
+						<p class="line l"></p>
+						<p class="line a"></p>
+						<p class="line a"></p>
+					</div>
+					<div class="out">
+						<p class="line a"></p>
+						<p class="line a"></p>
+						<p class="line a"></p>
+					</div>
+				</div>
+			</div>
+			<div class="road road_EW">
+				<div class="right">
+					<div class="in">
+						<p class="l"></p>
+						<p class="a"></p>
+						<p class="a"></p>
+					</div>
+					<div class="out">
+						<p class="a"></p>
+						<p class="a"></p>
+						<p class="a"></p>
+					</div>
+				</div>
+				<div class="left">
+					<div class="in">
+						<p class="a"></p>
+						<p class="a"></p>
+						<p class="l"></p>
+					</div>
+					<div class="out">
+						<p class="a"></p>
+						<p class="a"></p>
+						<p class="a"></p>
+					</div>
+				</div>
+			</div>
 			<div class="light light_NS">
 				<p class="turnL">
 					<span v-for="ltL in NS.L" :class="[ltL.class,{'on':ltL.on},{'flash':ltL.flash}]">
@@ -195,6 +247,10 @@
 $green: #3a3;
 $red: #e33;
 $yellow: #f90;
+
+$road_width:10%;
+
+p{margin: 0;}
 *{box-sizing: border-box;}
 .cG{color:$green}
 .cY{color:$yellow}
@@ -208,8 +264,8 @@ $yellow: #f90;
 }
 .WN,.EN,.WS,.ES{
 	position: absolute;
-	width: 40%;
-	height: 40%;
+	width: (100% - $road_width)/2;
+	height: (100% - $road_width)/2;
 	background: rgb(230, 230, 230);
 	border:.2em solid rgb(12, 105, 59);
 }
@@ -217,6 +273,37 @@ $yellow: #f90;
 .EN{border-top:0;border-right:0;right: 0;}
 .WS{border-bottom:0;border-left:0;bottom: 0;left: 0;}
 .ES{border-bottom:0;border-right:0;bottom: 0;right: 0;}
+.road{position: absolute;}
+.down,.up{width: 50%;display: inline-block;position: relative;}
+.road_NS{left: (100% - $road_width)/2;width: $road_width;height: 100%;
+	.line{width: 33.33%;height:100%;display: inline-block;}
+	.down,.up{height: 100%;
+		.in,.out{position: absolute; width:100%; height: (100% - $road_width)/2;}
+	}
+	.down{top: 0;padding-right:1px;
+		.line{border-right:2px solid #fff}
+		.in{top: 0;border-right: 2px solid $yellow;
+			&>p:last-child{border-right: 0;}
+		}
+		.out{bottom: 0;border-right: 2px solid $yellow;
+			&>p:last-child{border-right: 0;}
+		}
+	}
+	.up{bottom: 0;padding-left:1px;
+		.line{border-left:2px solid #fff}
+		.in{bottom: 0;border-left: 2px solid $yellow;
+			&>p:first-child{border-left: 0;}
+		}
+		.out{top: 0;border-left: 2px solid $yellow;
+			&>p:first-child{border-left: 0;}
+		}
+	}
+}
+.road_EW{
+	top: 100% - $road_width;
+	width: $road_width;
+	height: 100%;
+}
 .light{position:absolute;padding: .5em;width: 30%;height: 2em;background: rgb(168, 168, 168);border-radius:2px;
 	>p{width:1.8em;padding:.5em .4em;background:#333;border-radius:1em;display:inline-block;margin:-1.5em 1em 0 0;;
 		span{
