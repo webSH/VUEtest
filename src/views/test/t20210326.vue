@@ -114,8 +114,11 @@
 					},
 					countdownTime: null,
 					countdown: 0,
-					delay_L: 5,
-					delay_A: 10,
+					duration_L: 5,
+					duration_A: 10,
+					duration_y: 3,
+					duration_flash: 3,
+					delay_r: 2 // 红灯延时(秒)
 				},
 				EW:{
 					L:{
@@ -130,112 +133,163 @@
 					},
 					countdownTime: null,
 					countdown: 0,
-					delay_L: 5,
-					delay_A: 10,
+					duration_L: 5,
+					duration_A: 10,
+					duration_y: 3,
+					duration_flash: 3,
+					delay_r: 2 // 红灯延时(秒)
 				},
+				status: 'run',
 				runTime: null,
 			}
 		},
 		methods: {
-			init(LightObj_on=this.NS, LightObj_off=this.EW, delay_y=3){
+			/* 
+			init_directionObj_on 第一组
+			init_directionObj_off 第二组
+			*/
+			init(init_directionObj_on=this.NS, init_directionObj_off=this.EW){
 				let $this = this;
-				function Countdown(lightObj, delay){
-					function textTime(number){
+				this.status = 'run';
+				function Countdown(directionObj, duration){	//倒计时计算 directionObj:[南北|东西], duration:传秒
+					function textTime(number){ //一位转两位
 						if (number<10) {
 							let text = '0' + number;
-							lightObj.countdown = text.substr(0,2);
+							directionObj.countdown = text.substr(0,2);
 						}
 					}
-					if (lightObj.countdownTime) {
-						clearInterval(lightObj.countdownTime)
+
+					if (directionObj.countdownTime) {
+						clearInterval(directionObj.countdownTime)
 					}
-					lightObj.countdown = delay;
-					textTime(lightObj.countdown)
-					lightObj.countdownTime = setInterval(() => {
-						if (lightObj.countdown > 0){
-							lightObj.countdown -= 1;
+					directionObj.countdown = duration;
+					textTime(directionObj.countdown) //显示初始秒
+					directionObj.countdownTime = setInterval(() => { //轮询 → 显示倒计时
+						if (directionObj.countdown > 0){
+							directionObj.countdown --;
 						}
-						textTime(lightObj.countdown)
+						textTime(directionObj.countdown)
+						if ($this.status=='stop') {
+							clearInterval(directionObj.countdownTime)
+						}
 					}, 1*1000);
 				}
 
-				function directionChange(LightObj_on,LightObj_off) { //初始化
-					// 开方↓
-					LightObj_on.A['r'].on = false;
-					LightObj_on.A['y'].on = false;
-					LightObj_on.A['g'].on = true;
-					LightObj_on.A['g'].flash = false;
+				function lightInit(ON,OFF) { //初始化
+					// 通行方↓
+					ON.A['r'].on = false;
+					ON.A['y'].on = false;
+					ON.A['g'].on = true;
+					ON.A['g'].flash = false;
 
-					LightObj_on.L['r'].on = true;
-					LightObj_on.L['y'].on = false;
-					LightObj_on.L['g'].on = false;
-					LightObj_on.L['g'].flash = false;
+					ON.L['r'].on = true;
+					ON.L['y'].on = false;
+					ON.L['g'].on = false;
+					ON.L['g'].flash = false;
 					// 等待方↓
-					LightObj_off.A['r'].on = true;
-					LightObj_off.A['y'].on = false;
-					LightObj_off.A['g'].on = false;
-					LightObj_off.A['g'].flash = false;
+					OFF.A['r'].on = true;
+					OFF.A['y'].on = false;
+					OFF.A['g'].on = false;
+					OFF.A['g'].flash = false;
 
-					LightObj_off.L['r'].on = true;
-					LightObj_off.L['y'].on = false;
-					LightObj_off.L['g'].on = false;
-					LightObj_off.L['g'].flash = false;
+					OFF.L['r'].on = true;
+					OFF.L['y'].on = false;
+					OFF.L['g'].on = false;
+					OFF.L['g'].flash = false;
+
+					Countdown(ON, ON.duration_A); //通行方倒计时
+					Countdown(OFF, ON.duration_A + ON.duration_L + ON.duration_y*2 + ON.delay_r); //等待方倒计时(通行方 前+左+黄*2+红灯延时)
 				}
 
 
-				function flashOn(LightObj){	//闪
-					LightObj['g'].flash = true;
+				function flashOn(flashObj){	//闪
+					flashObj['g'].flash = true;
 				}
-				function flashOff(flashObj,LightObj){ //闪-off
+				function flashOff(flashObj,on){ //闪-off
 					flashObj['g'].flash = false;	//闪-off
 					flashObj['g'].on = false;	//绿-off
 					flashObj['y'].on = true;	//黄
-					Countdown(LightObj, delay_y);
+					Countdown(on, on.duration_y);
 				}
-				function yOff(LightObj_1st, LightObj_2en, LightObj, delay){ //黄-off
-					LightObj_1st['y'].on = false;	//1st-黄-off
-					LightObj_1st['r'].on = true;	//1st-红
-					LightObj_2en['g'].on = true; //2en-绿
-					LightObj_2en['r'].on = false; //2en-红-off
-					Countdown(LightObj, delay);
+				function yOff(curLightGroup, nextLightGroup, curDirection, nextDirection, nextDuration, delay_r){ //黄-off
+				/*	curLightGroup: 当前（绿灯）组,
+					nextLightGroup: 下一（红灯）组,
+					nextDirection: 切换后方向组,
+					nextDuration: 切换后方向组倒计时,
+					delay_r: 绿灯组红灯延时  */
+					curLightGroup['y'].on = false;	//1st-黄-off
+					curLightGroup['r'].on = true;	//1st-红
+					function switchDirection(){
+						nextLightGroup['g'].on = true; //2en-绿
+						nextLightGroup['r'].on = false; //2en-红-off
+						Countdown(nextDirection, nextDuration);	//2en-倒计时
+					}
+					if (delay_r){	//如果有红灯延时(换向情况)
+						Countdown(curDirection, curDirection.delay_r + nextDirection.duration_A + nextDirection.duration_L + nextDirection.duration_y*2 + nextDirection.delay_r); //1st-倒计时
+						setTimeout(() => {
+							if ($this.status=='run') {
+								switchDirection();
+								RUN(nextDirection, curDirection) //换向
+							}
+						}, delay_r*1000);
+					}else{
+						switchDirection();
+					}
 				}
 
-				directionChange(LightObj_on, LightObj_off);
-				function RUN(LightObj_on, LightObj_off){
-					Countdown(LightObj_on, LightObj_on.delay_A);
-					Countdown(LightObj_off, LightObj_on.delay_A + LightObj_on.delay_L + delay_y*2);
+				function RUN(directionObj_on, directionObj_off){
 					$this.runTime = setTimeout( ()=>{
-						flashOn(LightObj_on.A);	//1st-前闪
-						setTimeout(() => {
-							flashOff(LightObj_on.A, LightObj_on)	//1st-前闪-off
-							setTimeout(() => {
-								yOff(LightObj_on.A, LightObj_on.L, LightObj_on, LightObj_on.delay_L) //1st-前黄-off
-								setTimeout(() => {
-									flashOn(LightObj_on.L);	//1st-左闪
-									setTimeout(() => {
-										flashOff(LightObj_on.L, LightObj_on)	//1st-左闪-off
-										setTimeout(() => {
-											yOff(LightObj_on.L, LightObj_off.A, LightObj_off, LightObj_off.delay_A)	//1st-左黄-off
-											RUN(LightObj_off, LightObj_on) //切换方向
-										}, delay_y*1000);	//1st-左黄-off
-									}, delay_y*1000);	//1st-左闪-off
-								}, (LightObj_on.delay_L - delay_y)*1000);	//1st-左闪
-							}, delay_y*1000); //1st-前黄-off
-						}, delay_y*1000);	//1st-前闪-off
-					},(LightObj_on.delay_A - delay_y)*1000)	//1st-前闪
+						flashOn(directionObj_on.A);	//1st-前闪
+						let runTime_1st_a_Flash_off = setTimeout(() => {
+							flashOff(directionObj_on.A, directionObj_on)	//1st-前闪-off
+							let runTime_1st_a_y_off = setTimeout(() => {
+								yOff(directionObj_on.A, directionObj_on.L, directionObj_on, directionObj_on, directionObj_on.duration_L) //1st-前黄-off
+								let runTime_1st_l_flash = setTimeout(() => {
+									flashOn(directionObj_on.L);	//1st-左闪
+									let runTime_1st_l_flash_off = setTimeout(() => {
+										flashOff(directionObj_on.L, directionObj_on)	//1st-左闪-off
+										let runTime_1st_l_y_off = setTimeout(() => {
+											yOff(directionObj_on.L, directionObj_off.A, directionObj_on, directionObj_off, directionObj_off.duration_A, directionObj_on.delay_r)	//1st-左黄-off (换向在 yOff 中延时 directionObj_on.delay_r 完成)
+										}, directionObj_on.duration_y*1000);	//1st-左黄-off
+										if ($this.status=='stop' && runTime_1st_l_y_off){ //检查状态(是否停止)
+											clearTimeout(runTime_1st_l_y_off)
+										}
+									}, directionObj_on.duration_flash*1000);	//1st-左闪-off
+									if ($this.status=='stop' && runTime_1st_l_flash_off){ //检查状态(是否停止)
+										clearTimeout(runTime_1st_l_flash_off)
+									}
+								}, (directionObj_on.duration_L - directionObj_on.duration_y)*1000);	//1st-左闪
+								if ($this.status=='stop' && runTime_1st_l_flash){ //检查状态(是否停止)
+									clearTimeout(runTime_1st_l_flash)
+								}
+							}, directionObj_on.duration_y*1000); //1st-前黄-off
+							if ($this.status=='stop' && runTime_1st_a_y_off){ //检查状态(是否停止)
+								clearTimeout(runTime_1st_a_y_off)
+							}
+						}, directionObj_on.duration_flash*1000);	//1st-前闪-off
+						if ($this.status=='stop' && runTime_1st_a_Flash_off){ //检查状态(是否停止)
+							clearTimeout(runTime_1st_a_Flash_off)
+						}
+					},(directionObj_on.duration_A - directionObj_on.duration_y)*1000)	//1st-前闪
+
+					if ($this.status=='stop' && $this.runTime){ //检查状态(是否停止)
+						clearTimeout($this.runTime)
+					}
 				}
-				RUN(LightObj_on, LightObj_off)
+				lightInit(init_directionObj_on, init_directionObj_off);
+				RUN(init_directionObj_on, init_directionObj_off)
 			},
 			stop(){
+				this.status = 'stop';
 				if (this.runTime) {
 					clearTimeout(this.runTime)
 				}
-				if (this.NS.countdownTime) {
-					clearTimeout(this.NS.countdownTime)
-				}
-				if (this.EW.countdownTime) {
-					clearTimeout(this.EW.countdownTime)
-				}
+				// if (this.NS.countdownTime) {
+				// 	clearInterval(this.NS.countdownTime)
+				// }
+				// if (this.EW.countdownTime) {
+				// 	clearInterval(this.EW.countdownTime)
+				// }
 			}
 		},
 		mounted() {
@@ -314,10 +368,11 @@ p{margin: 0;}
 			background: rgb(18, 18, 18);
 			border:2px solid #666;
 			margin:0 0 .1em 0;
-			&.r.on{background: $red;}
-			&.y.on{background: $yellow;}
-			&.g.on{background: $green;}
-			&.flash{animation:flash 3s ease-out forwards;}
+			&::after{content:'';display: block;height: 100%;border-radius: 50%;}
+			&.r.on::after{background: $red;}
+			&.y.on::after{background: $yellow;}
+			&.g.on::after{background: $green;}
+			&.flash::after{animation:flash 1s linear infinite;}
 		}
 		// &.turnL{
 		// 	.r.on{background: rgb(18, 18, 18);
@@ -337,11 +392,9 @@ p{margin: 0;}
 	left: 5%;top: 30%;
 }
 @keyframes flash{
-	0%{opacity:0;}
-    20%{opacity:1;}
+	1%{opacity:0;}
 	40%{opacity:0;}
-    60%{opacity:1;}
-	80%{opacity:0;}
+    50%{opacity:1;}
     100%{opacity:1;}
 }
 </style>
