@@ -9,20 +9,21 @@
 	</div>
 </template>
 <script>
-function timeout(ms,n) {
-	return new Promise((a, reject) => {
-		if (n<5) {
-		setTimeout(a, ms, '传给 resolve 的参数');
+function timeout(ms,num) { //ms 毫秒   n 数字
+	return new Promise((resolve, reject) => {
+		if (num<5) {
+			setTimeout(resolve, ms, '传给 resolve 的参数');
 		}else {
 			setTimeout(reject, ms, '>5');
 		}
 	});
 }
-// timeout(100,3).then((value) => {
-// 	console.log(value);
-// },(value) => {
-// 	console.log('reject-'+value);
-// });
+
+timeout(100,3).then((value) => {
+	console.log(value);
+},(value) => {
+	console.log('reject-'+value);
+});
 
 function loadImageAsync(url) {
 	return new Promise(function(resolve, reject) {
@@ -39,16 +40,27 @@ function loadImageAsync(url) {
 		image.src = url;
 	});
 }
-loadImageAsync(location.origin+'/img/logo.82b9c7a5.png').then(val=>{console.log("%c ","padding:90px 100px;line-height:20px;background:url("+val+") no-repeat")},val=>{console.log(val)});
+function timeout2(){
+	return new Promise((resolve,reject)=>{
+		setTimeout(() => {
+			reject('图片加载失败')
+		}, 3000);
+	});
+}
+Promise.race([loadImageAsync(location.origin+'/img/logo.82b9c7a5.pn'),timeout2()]).then(
+	(a)=>{console.log(a)},
+	(err)=>{console.log('ERR-'+err)}
+)
+//loadImageAsync(location.origin+'/img/logo.82b9c7a5.png').then(val=>{console.log("%c ","padding:90px 100px;line-height:20px;background:url("+val+") no-repeat")},val=>{console.log(val)});
 
-const promise = new Promise(function(resolve,reject){
-	try {
-    throw new Error('test');
-  } catch(e) {
-    reject(e);
-  }
-});
-promise.catch(err=>{console.log(err)});
+// const promise = new Promise(function(resolve,reject){
+// 	try {
+//     throw new Error('test');
+//   } catch(e) {
+//     reject(e);
+//   }
+// });
+// promise.catch(err=>{console.log(err)});
 
 	export default {
 		name: 't20210308',
