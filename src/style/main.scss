@@ -17,6 +17,7 @@ body{font-size: 16px;}
 
 @for $i from 1 through 20 {
 	.tIdt#{$i}{text-indent:#{$i}em;}
+	.w#{$i}{width:#{$i}em;}
 }
 
 .bgGreen{background:$green;color:#fff}

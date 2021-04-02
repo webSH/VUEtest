@@ -1,7 +1,28 @@
 <template>
 	<div class="taL">
-		<h2>{{$route.name.substr(1)}}Auto Trafficlight</h2>
-		<button class="bgGreen" @click="init()">GO</button> <button class="bgRed" @click="stop()">STOP</button>
+		<h2>{{$route.name.substr(1)}}Auto traffic light</h2>
+		<section>
+			<p>
+				<span class="dpIB w4">南北↕:</span>
+				<label for="NS_duration_A">直行绿灯时间 <b class="cG">↑</b></label><input type="tel" maxlength="2" id="NS_duration_A" v-model.number="NS.duration_A" />（秒）
+				<label for="NS_duration_L">左转绿灯时间 <b class="cG">←</b></label><input type="tel" maxlength="2" id="NS_duration_L" v-model.number="NS.duration_L" />（秒）
+				<label for="NS_duration_flash">绿灯闪烁时间 <b class="cG">¤</b></label><input type="tel" maxlength="2" id="NS_duration_flash" v-model.number="NS.duration_flash" />（秒）
+				<label for="NS_duration_y">黄灯时间 <b class="cY">●</b></label><input type="tel" maxlength="2" id="NS_duration_y" v-model.number="NS.duration_y" />（秒）
+				<label for="NS_delay_r">红灯后延时 <b class="cR">§</b></label><input type="tel" maxlength="2" id="NS_delay_r" v-model.number="NS.delay_r" />（秒）
+			</p>
+			<p>
+				<span class="dpIB w4">东西 ↔:</span>
+				<label for="EW_duration_A">直行绿灯时间 <b class="cG">↑</b></label><input type="tel" maxlength="2" id="EW_duration_A" v-model.number="EW.duration_A" />（秒）
+				<label for="EW_duration_L">左转绿灯时间 <b class="cG">←</b></label><input type="tel" maxlength="2" id="EW_duration_L" v-model.number="EW.duration_L" />（秒）
+				<label for="EW_duration_flash">绿灯闪烁时间 <b class="cG">¤</b></label><input type="tel" maxlength="2" id="EW_duration_flash" v-model.number="EW.duration_flash" />（秒）
+				<label for="EW_duration_y">黄灯时间 <b class="cY">●</b></label><input type="tel" maxlength="2" id="EW_duration_y" v-model.number="EW.duration_y" />（秒）
+				<label for="EW_delay_r">红灯后延时 <b class="cR">§</b></label><input type="tel" maxlength="2" id="EW_delay_r" v-model.number="EW.delay_r" />（秒）
+			</p>
+			<p>
+				<button class="bgGreen" @click="init()">GO</button>
+				<button class="bgRed" @click="stop()">STOP</button>
+			</p>
+		</section>
 		<div class="space">
 			<div class="WN">
 
@@ -18,9 +39,9 @@
 			<div class="road road_NS">
 				<div class="down">
 					<div class="in">
-						<p class="line a"></p>
-						<p class="line a"></p>
-						<p class="line l"></p>
+						<p class="line a" :class="{'opBgGreen':NS.A['g'].on,'opBgFlash':NS.A['g'].flash,'opBgYellow':NS.A['y'].on,'opBgRed':NS.A['r'].on}"></p>
+						<p class="line a" :class="{'opBgGreen':NS.A['g'].on,'opBgFlash':NS.A['g'].flash,'opBgYellow':NS.A['y'].on,'opBgRed':NS.A['r'].on}"></p>
+						<p class="line l" :class="{'opBgGreen':NS.L['g'].on,'opBgFlash':NS.L['g'].flash,'opBgYellow':NS.L['y'].on,'opBgRed':NS.L['r'].on}"></p>
 					</div>
 					<div class="out">
 						<p class="line a"></p>
@@ -30,9 +51,9 @@
 				</div>
 				<div class="up">
 					<div class="in">
-						<p class="line l"></p>
-						<p class="line a"></p>
-						<p class="line a"></p>
+						<p class="line l" :class="{'opBgGreen':NS.L['g'].on,'opBgFlash':NS.L['g'].flash,'opBgYellow':NS.L['y'].on,'opBgRed':NS.L['r'].on}"></p>
+						<p class="line a" :class="{'opBgGreen':NS.A['g'].on,'opBgFlash':NS.A['g'].flash,'opBgYellow':NS.A['y'].on,'opBgRed':NS.A['r'].on}"></p>
+						<p class="line a" :class="{'opBgGreen':NS.A['g'].on,'opBgFlash':NS.A['g'].flash,'opBgYellow':NS.A['y'].on,'opBgRed':NS.A['r'].on}"></p>
 					</div>
 					<div class="out">
 						<p class="line a"></p>
@@ -42,28 +63,28 @@
 				</div>
 			</div>
 			<div class="road road_EW">
-				<div class="right">
-					<div class="in">
-						<p class="l"></p>
-						<p class="a"></p>
-						<p class="a"></p>
-					</div>
-					<div class="out">
-						<p class="a"></p>
-						<p class="a"></p>
-						<p class="a"></p>
-					</div>
-				</div>
 				<div class="left">
 					<div class="in">
-						<p class="a"></p>
-						<p class="a"></p>
-						<p class="l"></p>
+						<p class="line a" :class="{'opBgGreen':EW.A['g'].on,'opBgFlash':EW.A['g'].flash,'opBgYellow':EW.A['y'].on,'opBgRed':EW.A['r'].on}"></p>
+						<p class="line a" :class="{'opBgGreen':EW.A['g'].on,'opBgFlash':EW.A['g'].flash,'opBgYellow':EW.A['y'].on,'opBgRed':EW.A['r'].on}"></p>
+						<p class="line l" :class="{'opBgGreen':EW.L['g'].on,'opBgFlash':EW.L['g'].flash,'opBgYellow':EW.L['y'].on,'opBgRed':EW.L['r'].on}"></p>
 					</div>
 					<div class="out">
-						<p class="a"></p>
-						<p class="a"></p>
-						<p class="a"></p>
+						<p class="line a"></p>
+						<p class="line a"></p>
+						<p class="line a"></p>
+					</div>
+				</div>
+				<div class="right">
+					<div class="in">
+						<p class="line l" :class="{'opBgGreen':EW.L['g'].on,'opBgFlash':EW.L['g'].flash,'opBgYellow':EW.L['y'].on,'opBgRed':EW.L['r'].on}"></p>
+						<p class="line a" :class="{'opBgGreen':EW.A['g'].on,'opBgFlash':EW.A['g'].flash,'opBgYellow':EW.A['y'].on,'opBgRed':EW.A['r'].on}"></p>
+						<p class="line a" :class="{'opBgGreen':EW.A['g'].on,'opBgFlash':EW.A['g'].flash,'opBgYellow':EW.A['y'].on,'opBgRed':EW.A['r'].on}"></p>
+					</div>
+					<div class="out">
+						<p class="line a"></p>
+						<p class="line a"></p>
+						<p class="line a"></p>
 					</div>
 				</div>
 			</div>
@@ -76,7 +97,7 @@
 				<p class="turnA">
 					<span v-for="ltA in NS.A" :class="[ltA.class,{'on':ltA.on},{'flash':ltA.flash}]"></span>
 				</p>
-				<p class="countdown"><b class="LED" :class="{'cG':NS.A['g'].on || NS.L['g'].on, 'cY':NS.A['y'].on || NS.L['y'].on, 'cR':NS.A['r'].on && NS.L['r'].on}">{{NS.countdown}}</b></p>
+				<p class="countdown"><b class="LED" :class="{'cG':NS.A['g'].on || NS.L['g'].on, 'cY':NS.A['y'].on || NS.L['y'].on, 'cR':NS.A['r'].on && NS.L['r'].on}">{{textTime(NS.countdown)}}</b></p>
 			</div>
 			<div class="light light_EW">
 				<p class="turnL">
@@ -87,7 +108,7 @@
 				<p class="turnA">
 					<span v-for="ltA in EW.A" :class="[ltA.class,{'on':ltA.on},{'flash':ltA.flash}]"></span>
 				</p>
-				<p class="countdown"><b class="LED" :class="{'cG':EW.A['g'].on || EW.L['g'].on, 'cY':EW.A['y'].on || EW.L['y'].on, 'cR':EW.A['r'].on && EW.L['r'].on}">{{EW.countdown}}</b></p>
+				<p class="countdown"><b class="LED" :class="{'cG':EW.A['g'].on || EW.L['g'].on, 'cY':EW.A['y'].on || EW.L['y'].on, 'cR':EW.A['r'].on && EW.L['r'].on}">{{textTime(EW.countdown)}}</b></p>
 			</div>
 		</div>
 
@@ -152,27 +173,27 @@
 				let $this = this;
 				this.status = 'run';
 				function Countdown(directionObj, duration){	//倒计时计算 directionObj:[南北|东西], duration:传秒
-					function textTime(number){ //一位转两位
-						if (number<10) {
-							let text = '0' + number;
-							directionObj.countdown = text.substr(0,2);
-						}
-					}
 
 					if (directionObj.countdownTime) {
 						clearInterval(directionObj.countdownTime)
 					}
 					directionObj.countdown = duration;
-					textTime(directionObj.countdown) //显示初始秒
+					// textTime(directionObj.countdown) //显示初始秒
 					directionObj.countdownTime = setInterval(() => { //轮询 → 显示倒计时
 						if (directionObj.countdown > 0){
 							directionObj.countdown --;
 						}
-						textTime(directionObj.countdown)
+						// textTime(directionObj.countdown)
 						if ($this.status=='stop') {
 							clearInterval(directionObj.countdownTime)
 						}
 					}, 1*1000);
+				}
+
+				function lightDuration(duration) {
+					return new Promise((resolve,reject)=>{
+						setTimeout(resolve, duration*1000);
+					})
 				}
 
 				function lightInit(ON,OFF) { //初始化
@@ -226,12 +247,18 @@
 					}
 					if (delay_r){	//如果有红灯延时(换向情况)
 						Countdown(curDirection, curDirection.delay_r + nextDirection.duration_A + nextDirection.duration_L + nextDirection.duration_y*2 + nextDirection.delay_r); //1st-倒计时
-						setTimeout(() => {
+						// setTimeout(() => {
+						// 	if ($this.status=='run') {
+						// 		switchDirection();
+						// 		RUN(nextDirection, curDirection) //换向
+						// 	}
+						// }, delay_r*1000);
+						return lightDuration(delay_r).then(()=>{
 							if ($this.status=='run') {
 								switchDirection();
-								RUN(nextDirection, curDirection) //换向
+								rUN(nextDirection, curDirection);console.log('换向') //换向
 							}
-						}, delay_r*1000);
+						})
 					}else{
 						switchDirection();
 					}
@@ -276,8 +303,32 @@
 						clearTimeout($this.runTime)
 					}
 				}
+				function rUN(directionObj_on, directionObj_off){
+					return Promise.resolve()
+						.then(()=>{console.log('1st-前绿')	//1st-前绿
+							return lightDuration(directionObj_on.duration_A - directionObj_on.duration_y);
+						}).then(()=>{console.log('1st-前闪')	//1st-前闪
+							flashOn(directionObj_on.A);
+							return lightDuration(directionObj_on.duration_flash);
+						}).then(()=>{console.log('1st-前闪-off')	//1st-前闪-off
+							flashOff(directionObj_on.A, directionObj_on);
+							return lightDuration(directionObj_on.duration_y);
+						}).then(()=>{console.log('1st-前黄-off') //1st-前黄-off
+							yOff(directionObj_on.A, directionObj_on.L, directionObj_on, directionObj_on, directionObj_on.duration_L);
+							return lightDuration(directionObj_on.duration_L - directionObj_on.duration_y);
+						}).then(()=>{console.log('1st-左闪')	//1st-左闪
+							flashOn(directionObj_on.L);
+							return lightDuration(directionObj_on.duration_flash);
+						}).then(()=>{console.log('1st-左闪-off')	//1st-左闪-off
+							flashOff(directionObj_on.L, directionObj_on);
+							return lightDuration(directionObj_on.duration_y)
+						}).then(()=>{console.log('1st-左黄-off')	//1st-左黄-off (换向在 yOff 中延时 directionObj_on.delay_r 完成)
+							yOff(directionObj_on.L, directionObj_off.A, directionObj_on, directionObj_off, directionObj_off.duration_A, directionObj_on.delay_r)
+						})
+				}
 				lightInit(init_directionObj_on, init_directionObj_off);
-				RUN(init_directionObj_on, init_directionObj_off)
+				// RUN(init_directionObj_on, init_directionObj_off)
+				rUN(init_directionObj_on, init_directionObj_off)
 			},
 			stop(){
 				this.status = 'stop';
@@ -290,6 +341,10 @@
 				// if (this.EW.countdownTime) {
 				// 	clearInterval(this.EW.countdownTime)
 				// }
+			},
+			textTime(number){ //一位转两位
+				let text = number<10?('0' + number).substr(0,2):number;
+				return text;
 			}
 		},
 		mounted() {
@@ -301,14 +356,23 @@
 $green: #3a3;
 $red: #e33;
 $yellow: #f90;
+$yellow_light: #fd0;
 
 $road_width:10%;
 
-p{margin: 0;}
+$road_opcity:.1;
+
 *{box-sizing: border-box;}
+label{margin-right:.5em;}
+input{width: 3em;}
+p{margin: 0;}
 .cG{color:$green}
 .cY{color:$yellow}
 .cR{color:$red}
+.opBgGreen{background:rgba(51,170,51,$road_opcity)}
+.opBgYellow{background:rgba(255,253,0,$road_opcity)}
+.opBgRed{background:rgba(238,51,51,$road_opcity)}
+.opBgFlash{animation:flash 1s linear infinite;}
 .space{
 	position: relative;
 	width: 80%;
@@ -323,40 +387,61 @@ p{margin: 0;}
 	background: rgb(230, 230, 230);
 	border:.2em solid rgb(12, 105, 59);
 }
-.WN{border-top:0;border-left:0;left: 0;}
-.EN{border-top:0;border-right:0;right: 0;}
-.WS{border-bottom:0;border-left:0;bottom: 0;left: 0;}
-.ES{border-bottom:0;border-right:0;bottom: 0;right: 0;}
+.WN{border-top:0;border-left:0;left: 0;border-radius: 0 0 7% 0;}
+.EN{border-top:0;border-right:0;right: 0;border-radius: 0 0 0 7%;}
+.WS{border-bottom:0;border-left:0;bottom: 0;left: 0;border-radius: 0 7% 0 0;}
+.ES{border-bottom:0;border-right:0;bottom: 0;right: 0;border-radius: 7% 0 0 0;}
 .road{position: absolute;}
 .down,.up{width: 50%;display: inline-block;position: relative;}
 .road_NS{left: (100% - $road_width)/2;width: $road_width;height: 100%;
 	.line{width: 33.33%;height:100%;display: inline-block;}
 	.down,.up{height: 100%;
-		.in,.out{position: absolute; width:100%; height: (100% - $road_width)/2;}
+		.in,.out{position: absolute; width:100%; height: (100% - $road_width*1.5)/2;}
 	}
 	.down{top: 0;padding-right:1px;
 		.line{border-right:2px solid #fff}
-		.in{top: 0;border-right: 2px solid $yellow;
+		.in{top: 0;border-right: 2px solid $yellow_light;
 			&>p:last-child{border-right: 0;}
 		}
-		.out{bottom: 0;border-right: 2px solid $yellow;
+		.out{bottom: 0;border-right: 2px solid $yellow_light;
 			&>p:last-child{border-right: 0;}
 		}
 	}
 	.up{bottom: 0;padding-left:1px;
 		.line{border-left:2px solid #fff}
-		.in{bottom: 0;border-left: 2px solid $yellow;
+		.in{bottom: 0;border-left: 2px solid $yellow_light;
 			&>p:first-child{border-left: 0;}
 		}
-		.out{top: 0;border-left: 2px solid $yellow;
+		.out{top: 0;border-left: 2px solid $yellow_light;
 			&>p:first-child{border-left: 0;}
 		}
 	}
 }
+.right,.left{height: 50%;position: relative;}
 .road_EW{
-	top: 100% - $road_width;
-	width: $road_width;
-	height: 100%;
+	top: (100% - $road_width)/2;width: 100%;height: $road_width;
+	.line{width: 100%;height: 33.33%;}
+	.right,.left{width: 100%;
+		.in,.out{position: absolute; width: (100% - $road_width*1.5)/2; height: 100%;}
+	}
+	.right{left: 0;padding-top:1px;
+		.line{border-top:2px solid #fff}
+		.in{left: 0;border-top: 2px solid $yellow_light;
+			&>p:first-child{border-top: 0;}
+		}
+		.out{right: 0;border-top: 2px solid $yellow_light;
+			&>p:first-child{border-top: 0;}
+		}
+	}
+	.left{right: 0;padding-bottom:1px;
+		.line{border-bottom:2px solid #fff}
+		.in{right: 0;border-bottom: 2px solid $yellow_light;
+			&>p:last-child{border-bottom: 0;}
+		}
+		.out{left: 0;border-bottom: 2px solid $yellow_light;
+			&>p:last-child{border-bottom: 0;}
+		}
+	}
 }
 .light{position:absolute;padding: .5em;width: 30%;height: 2em;background: rgb(168, 168, 168);border-radius:2px;
 	>p{width:1.8em;padding:.5em .4em;background:#333;border-radius:1em;display:inline-block;margin:-1.5em 1em 0 0;;
